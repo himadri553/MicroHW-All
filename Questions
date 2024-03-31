@@ -1,1 +1,8 @@
+1. What type of ADC is used?
+Ans: 16-channel, 10-bit ADC
 
+2. The datasheet mentions a noise-cancelling mode for the ADC. In one or two sentences, what does this mode do and when might you want to use it?
+Ans: The ADC Noise Reduction mode stops the CPU and all I/O modules except Asynchronous Timer and ADC, to minimize switching noise during ADC conversions. This improves the noise environment for the ADC, enabling higher resolution measurements.
+
+3. How do you find the input voltage of the signal given the ADC value?
+Ans:
