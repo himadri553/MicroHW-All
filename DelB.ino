@@ -3,16 +3,16 @@
   data sheet: https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
 
   doesnt work - just printing 0, does not change distance
+  even echo pin isnt reading anything
 */
 
-#define trigPin 9
-#define echoPin 11
+#define trigPin 9 // orange
+#define echoPin 11  // green
 
 // vars
-int triggerTime = 10;
-int signalTime; // time it takes for signal to get back
-int final_distance;
-int distanceCalcFactor = 0.034 / 2; // factor to calc distance (from datasheet - sorta)
+float signalTime; // time it takes for signal to get back
+float final_distance;
+float distanceCalcFactor = 0.0343 / 2; // factor to calc distance (from datasheet? - sorta)
 
 void setup() {
   Serial.begin(9600);
@@ -20,16 +20,16 @@ void setup() {
   pinMode(echoPin, INPUT);
 }
 
-void trigger(int triggerTime_main) {
+void trigger() {
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(triggerTime_main);
+  delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 }
 
 void loop() {
   /* Get distance */
   digitalWrite(trigPin, LOW); // reset pin
-  trigger(triggerTime); // send signal out
+  trigger(); // send signal out
   signalTime = pulseIn(echoPin, HIGH); // get time for signal to get back 
   final_distance = distanceCalcFactor * signalTime;
 
