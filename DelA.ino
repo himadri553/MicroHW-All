@@ -1,9 +1,11 @@
-#define pot 11
+#define pot A11
 
 void setup() {
-  Serial
+  pinMode(pot, INPUT_PULLUP);
+  Serial.begin(9600);
 }
 
 void loop() {
-  
+  int ouput = 
+  Serial.println();
 }
