@@ -1,18 +1,20 @@
-// include the library code:
-#include <LiquidCrystal.h>
-
 // vars
+#include <LiquidCrystal.h>
 #define trigPin A2 // orange
 #define echoPin A1  // green
 float signalTime; // time it takes for signal to get back
 float final_distance;
 float distanceCalcFactor = 0.0343 / 2; 
-LiquidCrystal lcd(50, 46, 47, 49, 51, 53);
+LiquidCrystal lcd(50, 46, 47, 49, 51, 53); // (rs, en, d4, d5, d6, d7)
 
-void trigger() {
+float getDistance() {
+  /* Get distance */
+  digitalWrite(trigPin, LOW); // reset pin
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
+  signalTime = pulseIn(echoPin, HIGH); // get time for signal to get back 
+  return distanceCalcFactor * signalTime;
 }
 
 void setup() {
@@ -24,16 +26,11 @@ void setup() {
 }
 
 void loop() {
-  /* Get distance */
-  digitalWrite(trigPin, LOW); // reset pin
-  trigger(); // send signal out
-  signalTime = pulseIn(echoPin, HIGH); // get time for signal to get back 
-  final_distance = distanceCalcFactor * signalTime;
+  final_distance = getDistance();
   
   /*Print Distance in Cm on LCD*/
   lcd.clear(); // refresh screen
-  lcd.println("Distance: ");
   lcd.println(final_distance);
-  lcd.print("cm");
+  lcd.print(" cm");
   delay(1000); // refresh time
 }
