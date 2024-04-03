@@ -3,8 +3,8 @@
   data sheet: https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
 */
 
-#define trigPin A1 // orange
-#define echoPin A2  // green
+#define trigPin A2 // orange
+#define echoPin A1  // green
 
 // vars
 float signalTime; // time it takes for signal to get back
