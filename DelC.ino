@@ -1,3 +1,13 @@
+/*
+  LCD Setup (rest in setup loop):
+  v0 = output of pot
+  vss = ground
+  vdd = 5v
+  rs = 50
+  rw = ground
+  e = 46
+*/
+
 // vars
 #include <LiquidCrystal.h>
 #define trigPin A2 // orange
