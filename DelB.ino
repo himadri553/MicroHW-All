@@ -1,13 +1,10 @@
 /*
   DelB
   data sheet: https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
-
-  doesnt work - just printing 0, does not change distance
-  even echo pin isnt reading anything
 */
 
-#define trigPin 9 // orange
-#define echoPin 11  // green
+#define trigPin A1 // orange
+#define echoPin A2  // green
 
 // vars
 float signalTime; // time it takes for signal to get back
