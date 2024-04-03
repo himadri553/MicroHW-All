@@ -8,8 +8,8 @@
 
 // vars
 float signalTime; // time it takes for signal to get back
-float final_distance;
-float distanceCalcFactor = 0.0343 / 2; // factor to calc distance (from datasheet? - sorta)
+float final_distance; // in cm 
+float distanceCalcFactor = 0.0343 / 2; 
 
 void setup() {
   Serial.begin(9600);
@@ -32,5 +32,6 @@ void loop() {
 
   /* Output distance */
   Serial.println(final_distance);
+  Serial.print("cm");
   delay(1000); // so the loop chills
 }
