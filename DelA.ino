@@ -6,7 +6,7 @@ void setup() {
   Serial.begin(9600);
 }
 
-void PWM_Signnal(float input) {
+void PWM_Signal(float input) {
   //convert custom number to duty cycle
   float duty_cycle;
   if (input >= 0 && input <= 15) {
@@ -21,6 +21,6 @@ void PWM_Signnal(float input) {
 }
 
 void loop() {
-  PWM_Signnal(7);
+  PWM_Signal(7);
   delay(10);
 }
