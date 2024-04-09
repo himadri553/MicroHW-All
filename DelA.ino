@@ -19,15 +19,28 @@ void PWM_Signnal(float input) {
   for (int i = 1; i < 100; i++) {
     if (duty_cycle >= i) {
       digitalWrite(ledPin, HIGH);
-      delayMicroseconds(duty_cycle);
     }
     else {
       digitalWrite(ledPin, LOW);
-      delayMicroseconds(duty_cycle);
     }
   }
 }
 
 void loop() {
-  PWM_Signnal(0);
-}
+  for (int i = 0; i < 15; i++) {
+    PWM_Signnal(4);
+  }
+  delay(100);
+  for (int i = 0; i < 15; i++) {
+    PWM_Signnal(8);
+  }
+  delay(10);
+   for (int i = 0; i < 15; i++) {
+    PWM_Signnal(12);
+  }
+  delay(100);
+  for (int i = 0; i < 15; i++) {
+    PWM_Signnal(15);
+  }
+  delay(10);
+  }
