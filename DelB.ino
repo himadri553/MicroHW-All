@@ -1,9 +1,30 @@
+// Del B
 #define ENABLE 5
 #define DIRA 3
 #define DIRB 4
 
 int i;
- 
+void PWM_Signnal(float input, int num_cycles, int signal_pin) {
+  float duty_cycle;
+  for (int j = 0; j < num_cycles; j++) {
+    //convert custom number to duty cycle
+    if (input >= 0 && input <= 10) {
+      duty_cycle = ((input / 10) * 100); 
+    } 
+
+    // run PWM signal
+    for (int i = 1; i < 100; i++) {
+      if (duty_cycle >= i) {
+        digitalWrite(signal_pin, HIGH);
+      }
+      else {
+        digitalWrite(signal_pin, LOW);
+      }
+    }
+  }
+  Serial.println(duty_cycle);
+}
+
 void setup() {
   //---set pin direction
   pinMode(ENABLE,OUTPUT);
@@ -13,55 +34,20 @@ void setup() {
 }
 
 void loop() {
-  //---back and forth example
-    Serial.println("One way, then reverse");
-    digitalWrite(ENABLE,HIGH); // enable on
-    for (i=0;i<5;i++) {
-    digitalWrite(DIRA,HIGH); //one way
-    digitalWrite(DIRB,LOW);
-    delay(500);
-    digitalWrite(DIRA,LOW);  //reverse
-    digitalWrite(DIRB,HIGH);
-    delay(500);
-  }
-  digitalWrite(ENABLE,LOW); // disable
-  delay(2000);
-
-  Serial.println("fast Slow example");
-  //---fast/slow stop example
-  digitalWrite(ENABLE,HIGH); //enable on
-  digitalWrite(DIRA,HIGH); //one way
-  digitalWrite(DIRB,LOW);
-  delay(3000);
-  digitalWrite(ENABLE,LOW); //slow stop
-  delay(1000);
-  digitalWrite(ENABLE,HIGH); //enable on
-  digitalWrite(DIRA,LOW); //one way
-  digitalWrite(DIRB,HIGH);
-  delay(3000);
-  digitalWrite(DIRA,LOW); //fast stop
-  delay(2000);
-
   Serial.println("PWM full then slow");
-  //---PWM example, full speed then slow
+  PWM_Signnal(9.5, 200, ENABLE); //enable on
+  digitalWrite(DIRA,HIGH); //one way
+  delay(2000);
+  PWM_Signnal(0, 100, ENABLE);
+  delay(2000);
+
+  // digital write one
+  Serial.println("full then slow");
   analogWrite(ENABLE,255); //enable on
   digitalWrite(DIRA,HIGH); //one way
   digitalWrite(DIRB,LOW);
   delay(2000);
   analogWrite(ENABLE,180); //half speed
   delay(2000);
-  analogWrite(ENABLE,128); //half speed
-  delay(2000);
-  analogWrite(ENABLE,50); //half speed
-  delay(2000);
-  analogWrite(ENABLE,128); //half speed
-  delay(2000);
-  analogWrite(ENABLE,180); //half speed
-  delay(2000);
-  analogWrite(ENABLE,255); //half speed
-  delay(2000);
-  digitalWrite(ENABLE,LOW); //all done
-  delay(10000);
 }
    
-
