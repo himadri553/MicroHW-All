@@ -11,8 +11,7 @@ void loop() {
   if (switchState == HIGH) {
     // switch is on
   }
-  else
-  { (switchState == LOW) 
+  else { (switchState == LOW) 
     // switch is off
   }
   delay(1000);
