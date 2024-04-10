@@ -1,7 +1,7 @@
 // Del B
-#define ENABLE 5
-#define DIRA 3
-#define DIRB 4
+#define ENABLE 5 // red
+#define DIRA 3 // blue
+#define DIRB 4 // yellow
 
 int i;
 void PWM_Signnal(float input, int num_cycles, int signal_pin) {
