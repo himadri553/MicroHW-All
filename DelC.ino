@@ -6,21 +6,48 @@
 */
 #define buttonPin 2
 #define LED_Pin 42
+int ledState = LOW;
+int madState = 1;
 
 void setup() {
-  pinMode(switchPin, INPUT);
+  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(LED_Pin, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  int switchState = digitalRead(switchPin);
+  // vars
+  int switchState = digitalRead(buttonPin);
 
-  if (switchState == HIGH) {
-    // switch is on
+  // when button is pressed...
+  if (switchState == LOW) {
+    // switch light colors
+    ledState = !ledState;
+    digitalWrite(LED_Pin, ledState);
+
+    // get mad
+    switch (madState) {
+      case 1:
+        madState1();
+        break;
+      case 2:
+        madState2();
+        break;
+      case 3:
+        madState3();
+        break;
+    }
+
+    // next mad state
+    madState = madState + 1;
+    if (madState == 3) {
+      madState = 1;
+    }
   }
-  else { (switchState == LOW) 
-    // switch is off
-  }
-  delay(1000);
+
+}
+
+void madState1() {
+  
 }
 
