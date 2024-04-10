@@ -35,10 +35,11 @@ void setup() {
 
 void loop() {
   Serial.println("PWM full then slow");
-  PWM_Signnal(9.5, 200, ENABLE); //enable on
   digitalWrite(DIRA,HIGH); //one way
-  delay(2000);
-  PWM_Signnal(0, 100, ENABLE);
+  digitalWrite(DIRB,LOW);
+  PWM_Signnal(10, 100, ENABLE); //enable on
+  delay(2000); 
+  PWM_Signnal(8, 100, ENABLE); // will not slow down, just shut off
   delay(2000);
 
   // digital write one
@@ -46,7 +47,7 @@ void loop() {
   analogWrite(ENABLE,255); //enable on
   digitalWrite(DIRA,HIGH); //one way
   digitalWrite(DIRB,LOW);
-  delay(2000);
+  delay(1000);
   analogWrite(ENABLE,180); //half speed
   delay(2000);
 }
