@@ -1,5 +1,7 @@
 /* DEL A
   PWM_Signnal: takes input(brightness) and number of cycles
+  input (out of 15) is converted to a percentage which is then the duty cycle
+  duty cycle: the percentage of the cycle that is on, rest is off
 */
 // Pin connected to LED
 #define ledPin 44
