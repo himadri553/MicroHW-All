@@ -1,5 +1,4 @@
-// Define the pin the switch is connected to
-const int switchPin = 2; // Change this to match the pin you've connected the switch to
+const int switchPin = 2;
 
 void setup() {
   pinMode(switchPin, INPUT);
@@ -7,10 +6,8 @@ void setup() {
 }
 
 void loop() {
-  // Read the state of the switch
   int switchState = digitalRead(switchPin);
 
-  // Check if the switch is turned on
   if (switchState == HIGH) {
     // switch is on
   }
