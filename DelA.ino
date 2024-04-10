@@ -7,40 +7,28 @@ void setup() {
   pinMode(ledPin, OUTPUT);
 }
 
-void PWM_Signnal(float input) {
-  //convert custom number to duty cycle
-  float duty_cycle;
-  if (input >= 0 && input <= 15) {
-    duty_cycle = ((input / 15) * 100); 
-    Serial.println(duty_cycle);
-  } 
+void PWM_Signnal(float input, int num_cycles) {
+  for (int j = 0; j < num_cycles; j++) {
+    //convert custom number to duty cycle
+    float duty_cycle;
+    if (input >= 0 && input <= 15) {
+      duty_cycle = ((input / 15) * 100); 
+      Serial.println(duty_cycle);
+    } 
 
-  // run PWM signal
-  for (int i = 1; i < 100; i++) {
-    if (duty_cycle >= i) {
-      digitalWrite(ledPin, HIGH);
+    // run PWM signal
+    for (int i = 1; i < 100; i++) {
+      if (duty_cycle >= i) {
+        digitalWrite(ledPin, HIGH);
+      }
+      else {
+        digitalWrite(ledPin, LOW);
+      }
     }
-    else {
-      digitalWrite(ledPin, LOW);
-    }
+    delay(100); // just for testing
   }
 }
 
 void loop() {
-  for (int i = 0; i < 15; i++) {
-    PWM_Signnal(4);
-  }
-  delay(100);
-  for (int i = 0; i < 15; i++) {
-    PWM_Signnal(8);
-  }
-  delay(10);
-   for (int i = 0; i < 15; i++) {
-    PWM_Signnal(12);
-  }
-  delay(100);
-  for (int i = 0; i < 15; i++) {
-    PWM_Signnal(15);
-  }
-  delay(10);
-  }
+  PWM_Signnal(1, 100);
+}
