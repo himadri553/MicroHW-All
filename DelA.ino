@@ -1,3 +1,6 @@
+/* DEL A
+  PWM_Signnal: takes input(brightness) and number of cycles
+*/
 // Pin connected to LED
 #define ledPin 44
 
@@ -25,10 +28,11 @@ void PWM_Signnal(float input, int num_cycles) {
         digitalWrite(ledPin, LOW);
       }
     }
-    delay(100); // just for testing
   }
 }
 
 void loop() {
-  PWM_Signnal(1, 100);
+  for (int i = 0; i < 15; i++) {
+    PWM_Signnal(i, 10);
+  }
 }
