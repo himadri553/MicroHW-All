@@ -33,6 +33,6 @@ void PWM_Signnal(float input, int num_cycles) {
 
 void loop() {
   for (int i = 0; i < 15; i++) {
-    PWM_Signnal(i, 10);
+    PWM_Signnal(i, 50);
   }
 }
