@@ -10,17 +10,25 @@
 int main() {
     // Set reference voltage to AVcc and left adjust result
     ADMUX |= (1 << REFS0) | (1 << ADLAR); // This line configures the ADC Multiplexer Control Register (ADMUX) to set the reference voltage to AVcc and left-adjust the result. 
-                                        // AVcc is the supply voltage to the AVR chip, and left-adjusting the result means that the most significant bits of the ADC conversion result will be placed in the ADCH register, making it easier to work with.
+    // AVcc is the supply voltage to the AVR chip, and left-adjusting the result means that the most significant bits of the ADC conversion result will be placed in the ADCH register, making it easier to work with.
+    // This expression sets the Reference Selection bit 0 (REFS0) in the ADMUX register. This bit determines the reference voltage for the ADC conversion.
+    // This expression sets the ADC Left Adjust Result bit (ADLAR) in the ADMUX register. When ADLAR is set to 1, the result of the ADC conversion is left-adjusted. 
+    // This means that the most significant bits of the conversion result are placed in the high register (ADCH), while the remaining bits are placed in the low register (ADCL).
+    // So, combining (1 << REFS0) | (1 << ADLAR) sets both the REFS0 and ADLAR bits in the ADMUX register, configuring the ADC to use AVcc as the reference voltage and left-adjust the result of the ADC conversion.
+    
    
   // Enable ADC and set ADC prescaler to 128
     ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // This line configures the ADC Control and Status Register A (ADCSRA) to enable the ADC and set the ADC clock prescaler to 128. 
-                                                                       // This sets the ADC clock frequency to 125 kHz (16 MHz / 128), which is within the recommended range for accurate conversions.
+    // This sets the ADC clock frequency to 125 kHz (16 MHz / 128), which is within the recommended range for accurate conversions.
+   
     // Set LED pin as output
     DDRD |= (1 << 6); // This line sets pin 6 of port D (which corresponds to digital pin 6 on the Arduino Uno) as an output pin. This is where the LED will be connected.
     
   // Fast PWM mode, non-inverting, prescaler = 8
     TCCR0A |= (1 << COM0A1) | (1 << WGM01) | (1 << WGM00); // This line configures Timer/Counter Control Register A (TCCR0A) to set the Timer/Counter 0 (Timer 0) in Fast PWM mode with non-inverting mode. 
-                                                          // This mode allows us to control the brightness of the LED using PWM.
+     // This mode allows us to control the brightness of the LED using PWM.
+     // Specifically, WGM01 and WGM00 refer to bits in the Timer/Counter Control Register A (TCCR0A), which is used to configure the operation mode of Timer 0.
+    // The COM0A1 and COM0A0 bits control the output mode of the PWM signal, determining whether it's inverted or non-inverted.
     
   TCCR0B |= (1 << CS01); // This line configures Timer/Counter Control Register B (TCCR0B) to set the prescaler for Timer 0 to 8. This divides the system clock frequency by 8, providing the Timer 0 with a clock frequency of 2 MHz.
 
