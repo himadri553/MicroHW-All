@@ -1,4 +1,5 @@
-#define F_CPU 16000000UL  // Define CPU frequency
+#define F_CPU 16000000UL  // Define CPU frequency                                    // This version combines the initialization of ADC and PWM directly in the main function and integrates the ADC reading and PWM setting within the main loop. 
+                                                                                    // This simplification reduces the overall code size while retaining the functionality of controlling LED brightness with a potentiometer.
 #include <avr/io.h>
 #include <util/delay.h>
 
