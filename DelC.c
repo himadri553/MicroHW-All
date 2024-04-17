@@ -1,51 +1,43 @@
-// This code is a shortened version of what Chat gave me. It said it combines the initialization of ADC and PWM directly in the main function and integrates the ADC reading and PWM setting within the main loop. 
-// This simplification reduces the overall code size while retaining the functionality of controlling LED brightness with a potentiometer.
+/*DEL C*/
+#include <avr/io.h>
+#include <util/delay.h>
 
-#define F_CPU 16000000UL  // Define CPU frequency      
-// This line defines the CPU frequency as 16 MHz. This is necessary for proper timing functions like _delay_ms() to work accurately.
+#define LED PG5
+#define POT PF0
 
-#include <avr/io.h> // This line includes the AVR I/O header file, which provides access to AVR-specific register definitions.
-#include <util/delay.h> // This line includes the delay header file, which contains functions for creating time delays.
+#define F_CPU 16000000UL  // Define CPU frequency 16MHz
+
+void setup() {
+  DDRG |= (1 << LED); // LED setup
+  DDRF &= ~(1 << POT); // Potentiometer setup
+  PORTF &= ~(1 << POT);
+
+  // Configure ADC
+  ADMUX = (1 << REFS0); // Set reference voltage to AVcc
+  ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Enable ADC, set prescaler to 128
+}
+
+void mainLoop() {
+  // Start ADC conversion and wait for it to complete 
+  ADCSRA |= (1 << ADSC);
+  while (ADCSRA & (1 << ADSC));
+
+  // Get ADC value 
+  unsigned int adcValue = ADC;
+
+  // light LED up
+  OCR0B = ADC/10; // Map percentage to PWM value
+  TCCR0A = 0b10100011; // Set fast PWM mode, non-inverting mode
+  TCCR0B = 0b00000001; // Start PWM output
+
+  // Delay for stability 
+  _delay_ms(10);
+}
 
 int main() {
-    // Set reference voltage to AVcc and left adjust result
-    ADMUX |= (1 << REFS0) | (1 << ADLAR); // This line configures the ADC Multiplexer Control Register (ADMUX) to set the reference voltage to AVcc and left-adjust the result. 
-    // AVcc is the supply voltage to the AVR chip, and left-adjusting the result means that the most significant bits of the ADC conversion result will be placed in the ADCH register, making it easier to work with.
-    // This expression sets the Reference Selection bit 0 (REFS0) in the ADMUX register. This bit determines the reference voltage for the ADC conversion.
-    // This expression sets the ADC Left Adjust Result bit (ADLAR) in the ADMUX register. When ADLAR is set to 1, the result of the ADC conversion is left-adjusted. 
-    // This means that the most significant bits of the conversion result are placed in the high register (ADCH), while the remaining bits are placed in the low register (ADCL).
-    // So, combining (1 << REFS0) | (1 << ADLAR) sets both the REFS0 and ADLAR bits in the ADMUX register, configuring the ADC to use AVcc as the reference voltage and left-adjust the result of the ADC conversion.
-    
-   
-  // Enable ADC and set ADC prescaler to 128
-    ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // This line configures the ADC Control and Status Register A (ADCSRA) to enable the ADC and set the ADC clock prescaler to 128. 
-    // This sets the ADC clock frequency to 125 kHz (16 MHz / 128), which is within the recommended range for accurate conversions.
-   
-    // Set LED pin as output
-    DDRD |= (1 << 6); // This line sets pin 6 of port D (which corresponds to digital pin 6 on the Arduino Uno) as an output pin. This is where the LED will be connected.
-    
-  // Fast PWM mode, non-inverting, prescaler = 8
-    TCCR0A |= (1 << COM0A1) | (1 << WGM01) | (1 << WGM00); // This line configures Timer/Counter Control Register A (TCCR0A) to set the Timer/Counter 0 (Timer 0) in Fast PWM mode with non-inverting mode. 
-     // This mode allows us to control the brightness of the LED using PWM.
-     // Specifically, WGM01 and WGM00 refer to bits in the Timer/Counter Control Register A (TCCR0A), which is used to configure the operation mode of Timer 0.
-    // The COM0A1 and COM0A0 bits control the output mode of the PWM signal, determining whether it's inverted or non-inverted.
-    
-  TCCR0B |= (1 << CS01); // This line configures Timer/Counter Control Register B (TCCR0B) to set the prescaler for Timer 0 to 8. This divides the system clock frequency by 8, providing the Timer 0 with a clock frequency of 2 MHz.
-
-    while (1) {
-        // Start single conversion
-        ADCSRA |= (1 << ADSC); // This line starts a single ADC conversion by setting the ADC Start Conversion (ADSC) bit in the ADCSRA register.
-        
-      // Wait for conversion to complete
-        while (ADCSRA & (1 << ADSC)); // This line waits for the ADC conversion to complete by polling the ADSC bit in the ADCSRA register. When the conversion is complete, this bit will be cleared automatically by the hardware.
-        
-      // Set PWM duty cycle (0-255) based on ADC value (0-1023)
-        OCR0A = (ADCH >> 2); // This line sets the output compare register (OCR0A) of Timer 0 to control the PWM duty cycle. It uses the most significant 8 bits of the ADC result (ADCH), which are left-adjusted due to the configuration set earlier. 
-                            // Since we're using 8-bit PWM, we right-shift ADCH by 2 bits to scale the ADC value from a range of 0-1023 to a range of 0-255, which corresponds to the duty cycle of the PWM signal.
-        
-      // Delay for stability
-        _delay_ms(10);
-    }
-
-    return 0;
+  setup();
+  while (1) {
+    mainLoop();
+  }
+  return 0;
 }
