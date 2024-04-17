@@ -5,8 +5,6 @@
 #define LED PG5
 #define POT PF0
 
-#define F_CPU 16000000UL  // Define CPU frequency 16MHz
-
 void setup() {
   DDRG |= (1 << LED); // LED setup
   DDRF &= ~(1 << POT); // Potentiometer setup
