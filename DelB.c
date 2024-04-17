@@ -2,7 +2,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define LED PG5 // Blue LED connected to pin 13 (PG5)
+#define LED PG5 // Blue LED connected to pin 13 (PG5) 
 
 void setup() {
   DDRG |= (1 << LED); // Set LED pin to output
