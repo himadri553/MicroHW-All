@@ -21,6 +21,12 @@ void setup_pwm() {
     TIMSK1 |= (1 << TOIE1);
 }
 
+void mainLoop() {
+    OCR0B = 20; // set duty cycle and compare register 
+    TCCR0A = 0b10100011; // set fast mode
+    TCCR0B = 0b00000001; // start PWM output    
+}
+
 int main() {
     setup_pwm();
 
