@@ -1,4 +1,6 @@
 #include <avr/io.h>
+#define LED_PIN PG5
+
 .global main
 main:
 ; Define I/O port addresses
