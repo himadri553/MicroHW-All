@@ -1,0 +1,22 @@
+Objective: A remote controlled car that will reverse when a object gets to close 
+The joystick-controlled car will get input from the joystick for steering. The ultrasonic Device Operation:
+sensor will measure the distance to any obstacles in the car's path. If an obstacle is detected within a set distance, an interrupt will be triggered, the LED alarm will be activated, and setting the car to reverse. 
+
+Components:
+Digital Input: Joystick button for activating headlights, ultrasonic sensor for obstacle detection.
+Analog Input: Joystick controls for steering and speed adjustment.
+Digital Output: LED for alarm indication, headlights, servo motors for controlling car movement.
+Analog Output: Ultrasonic sensor for measuring distances to obstacles.
+
+
+Brainstorm Checklist (aprx difficulty level /10):
+- set up all the hardware components including LED, Sensor and the rest (8)
+- set up forward/backwards/turn functions (2)
+- set up joystick controls and a way to mount them (9) most likely need to set up some wireless mechnisim
+- set up interupt from ultrasonic sensor (5)
+- maybe get a longer cable? (3)
+- 
+
+Outline:
+in the main loop the control program will run???
+interupt will set off LED and backwards function, then return to main program
