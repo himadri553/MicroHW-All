@@ -71,15 +71,16 @@ void loop() {
         break;
 
         case 0x44:// left
-          turnLeft(1000);
+          turnRight(1000);
           delay(1000);
         break;
 
         case 0x43: // right
-          turnRight(1000);
+          turnLeft(1000);
           delay(1000);
         break;
       }
+      IrReceiver.resume();
     }
   }
 }
