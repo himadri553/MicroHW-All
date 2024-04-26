@@ -9,9 +9,9 @@
 #include <IRremote.hpp> 
 Servo RServo;
 Servo LServo;
-#define R_ServoPin 44
-#define L_ServoPin 45
-#define IR_Reciver 46
+#define R_ServoPin 44 // PWM
+#define L_ServoPin 45 // PWM
+#define IR_Reciver 46 // Any digital Pin with interupt 
 int debouceFactor = 50;
 int lastButtonPress = 0;
 
