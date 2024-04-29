@@ -11,7 +11,7 @@ Servo RServo;
 Servo LServo;
 #define R_ServoPin 11 // PWM
 #define L_ServoPin 12 // PWM
-#define IR_Reciver 46 // Any digital Pin with interupt 
+#define IR_Reciver 2 // Any digital Pin with interupt 
 int debouceFactor = 50;
 int lastButtonPress = 0;
 
