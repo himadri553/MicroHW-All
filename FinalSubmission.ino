@@ -17,7 +17,7 @@ int debouceFactor = 300;
 int lastButtonPress = 0;
 int moveLength;
 
-/* Set all pins here to corresponding input/output */
+/* Set all pins here to corresponding input/output, set up interupt */
 void setup() {
   Serial.begin(9600);
   RServo.attach(R_ServoPin);
@@ -70,6 +70,10 @@ void loop() {
   analogWrite(LED, (moveLength - 50) / 4.5);
 }
 
+/*
+  When the remote is pressed, multiple interupts will be triggred. The debounce takes care of this. Based on the decodedIRData.command, each button will play the corresponding movement. 
+  A delay is added to make sure the car comes to a complete stop
+*/
 void IR_ControlISR () {
   if (millis() >= (lastButtonPress + debouceFactor)) { // check for debounce
     lastButtonPress = millis();
