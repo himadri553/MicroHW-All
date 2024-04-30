@@ -1,19 +1,8 @@
-  // backwards: RServo.write(180); 
-  // forwards: RServo.write(-180); 
-  // forwards: LServo.write(180); 
-  // backwards: LServo.write(-180); 
-  // Stop: LServo.write(90); 
-  // Stop: RServo.write(90);
-  // IR d2
-
-  /*
-    Digital Output: servos
-    Digital Input: IR reciver
-    Analog Output: LED??
-    Analog Input: POT controls ??
-    IR keeps sending some signal, regardless of if the remote is pressed or not (bad for interupt)
-
-  */
+/*
+  Himadri Saha, Tejas Patil, Daniel Diep, Ashwin Srinivasan
+  EECE.3170
+  Final Project: Remote controlled car with distance control
+*/
 #include <Servo.h>
 #include <IRremote.hpp>
 #include <avr/interrupt.h>
@@ -28,6 +17,7 @@ int debouceFactor = 100;
 int lastButtonPress = 0;
 int moveLength;
 
+/* Set all pins here to corresponding input/output */
 void setup() {
   Serial.begin(9600);
   RServo.attach(R_ServoPin);
@@ -37,7 +27,7 @@ void setup() {
   pinMode(LED, OUTPUT);
 }
 
-/*All movement functions: Must have a delay after otherwise it wont stop!*/
+/*Each diricitonal movement is split up with a variable time duration. All movement functions: Must have a delay after otherwise it wont stop!*/
 void forwards(int duration) {
   LServo.write(180); 
   RServo.write(-180);
