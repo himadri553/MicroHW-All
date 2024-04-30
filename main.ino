@@ -72,11 +72,11 @@ void turnRight(int duration) {
 
 void loop() {
   /*get duration*/
-  moveLength = analogRead(POT);
+  moveLength = analogRead(POT) + 50;
   Serial.println(moveLength);
 
   /*Change LED*/
-  analogWrite(LED, moveLength/4.5);
+  analogWrite(LED, (moveLength - 50) / 4.5);
 
   /*Control movement*/
   if (IrReceiver.decode()) { // check for button press
