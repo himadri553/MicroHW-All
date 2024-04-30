@@ -73,6 +73,7 @@ void loop() {
 /*
   When the remote is pressed, multiple interupts will be triggred. The debounce takes care of this. Based on the decodedIRData.command, each button will play the corresponding movement. 
   A delay is added to make sure the car comes to a complete stop
+  Due to the rippling behavior of the IR sensor, there are still misinputs. Just using a debounce might not be enough to fix this. 
 */
 void IR_ControlISR () {
   if (millis() >= (lastButtonPress + debouceFactor)) { // check for debounce
