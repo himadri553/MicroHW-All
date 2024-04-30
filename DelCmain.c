@@ -1,23 +1,12 @@
-/*
-  corrected:
-  - fixed all pin variables 
-  - fixed pin setups
-  - turn off speaker / LED on during main loop??? 
-
-  not fix:
-  - led wont change
-  - speaker wont play
-  - led wont turn off 
-*/
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#define TRG _BV(PK7) // d15 = PK7
-#define ECHO _BV(PK6) // d14 = PK6
-#define RED _BV(PE5) // d3 = PE5
-#define BTN _BV(PE4) // d2 = PE4
-#define SPK _BV(PH5) // d8 = PH5
+#define TRG _BV(PJ0)
+#define ECHO _BV(PJ1)
+#define RED _BV(PE3)
+#define BTN _BV(PE4)
+#define SPK _BV(PH5)
 
 #define MAX_WAIT 200
 
@@ -27,62 +16,62 @@ unsigned long elapsedTime = 0;
 unsigned long duration = 0;
 
 void setupVars() {
-  // input and output setup
-  DDRK |= TRG;
+  DDRJ |= TRG;
   DDRE |= RED;
   DDRH |= SPK;
-  DDRK &= ~ECHO;
+
+  DDRJ &= ~ECHO;
   DDRE &= ~BTN;
 
   // PWM for LED
   OCR3C = 0;
-  TCCR3A |= 1 << COM3C1 | 1 << WGM30;
-  TCCR3B |= 1 << WGM32 | 1 << CS30;
+  TCCR3A |= 1<<COM3C1 | 1<<WGM30;
+  TCCR3B |= 1<<WGM32 | 1<<CS30;
 
   // Timer for speaker tone
   OCR4A = 0;
   OCR4C = 0;
   TCCR4A = 0;
-  TCCR4B = 1 << WGM42 | 1 << CS40;
+  TCCR4B = 1<<WGM42 | 1<<CS40;
 
-  EIMSK |= 1 << INT4;
-  EICRB |= 1 << ISC41;
+  EIMSK |= 1<<INT4;
+  EICRB |= 1<<ISC41;
   sei();
 }
 
 void mainLoop() {
-  PORTK |= TRG;
-  _delay_us(10);
-  PORTK &= ~TRG;
 
-  while (!(PINJ & ECHO)) {
+  PORTJ |= TRG;
+  _delay_us(10);
+  PORTJ &= ~TRG;
+
+  while(!(PINJ & ECHO)) {
     duration++;
-    if (duration >= 640000) {
+    if(duration >= 640000) {
       break;
     }
-  }
+  } 
 
   // measure number of microseconds (approx) that the pulse lasts
-  while (PINJ & ECHO) {
+  while(PINJ & ECHO) {
     elapsedTime++;
-    _delay_us(10);
-    if (elapsedTime >= 640000) {
+    _delay_ms(1);
+    if(elapsedTime >= 640000) {
       break;
     }
   }
 
-  if (mode) {
+ if(mode) {
     // set pitch: shorter return should be higher pitch
-    OCR3C = 0; // stop LED
-    OCR4A = F_CPU / (5000 - elapsedTime / 4) - 1;
-    TIMSK4 |= 1 << OCIE4A;
+    OCR4A = F_CPU / 5000 - elapsedTime/4 - 1;
+    TIMSK4 |= 1<<OCIE4A;
     PORTE &= ~RED;
-
-  } else {
+    
+  }
+  else {
     // set LED brightness: brighter when closer
-    TIMSK4 &= ~(1 << OCIE4A); // turn off speaker
-    OCR3C = 255 - elapsedTime / 16; // Adjusted scaling factor
-    if (elapsedTime >= MAX_WAIT) { // Turn off LED if distance exceeds MAX_WAIT
+    OCR3C = 255 - elapsedTime/64;
+    if(elapsedTime/64 > 255) {
       OCR3C = 0;
     }
   }
@@ -95,23 +84,28 @@ void mainLoop() {
 
 int main(void) {
   setupVars();
-  while (1) {
+  while(1) {
     mainLoop();
   }
 }
 
-ISR(INT4_vect) { // just swtiches Mode
+ISR(INT1_vect) {
   // Speaker to LED
-  if (mode) {
+  if(!mode) {
+    // Stop Speaker
+    TIMSK4 &= ~(1<<OCIE4A);
     mode = 0;
   }
   // LED to Speaker
   else {
+    // Stop LED
+    OCR3C = 0;
     mode = 1;
   }
 }
 
 // Time to manage speaker freq
-ISR(TIMER4_COMPA_vect) {
+ISR(TIMER4_COMPA_vect)
+{
   PORTH ^= SPK;
 }
