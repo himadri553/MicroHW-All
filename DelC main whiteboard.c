@@ -49,10 +49,13 @@ void setupVars() {
 
 void mainLoop() {
   // send out signal
+  PORTJ &= ~TRG;
+  _delay_us(10);
   PORTJ |= TRG;
   _delay_us(10);
   PORTJ &= ~TRG;
 
+  /*
   // counter until ??
   while(!(PINJ & ECHO)) {
     duration++;
@@ -60,6 +63,7 @@ void mainLoop() {
       break;
     }
   } 
+  */
 
   // counter until ?? 
   while(PINJ & ECHO) {
