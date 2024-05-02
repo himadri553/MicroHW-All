@@ -9,76 +9,73 @@
 
 .global main
 main:
-      ldi	r16,lo8(RAMEND)
-      sts	SPL,r16
-      ldi	r16,hi8(RAMEND)
-      sts	SPH,r16	
-      
-      ldi R16,0b00100000
-      out _SFR_IO_ADDR(DDRE),R16
-      ldi R16,0b00100000
-      out _SFR_IO_ADDR(DDRG),R16
-      ldi R16,0b00001000
-      sts DDRH,R16 ; H's address is too high, must use sts instead of out
+      ldi    r16,lo8(RAMEND)
+      sts    SPL,r16
+      ldi    r16,hi8(RAMEND)
+      sts    SPH,r16 
 
-      ldi R16,0b00000000
-      ldi R17,0b00100000 ; mask for 5
-      ldi R18,0b00001000 ; mask for 3
-      ldi R20,0b00010000 ; mask for 4
+      ldi    r16,0b00100000
+      out    _SFR_IO_ADDR(DDRE),r16
+      ldi    r16,0b00100000
+      out    _SFR_IO_ADDR(DDRG),r16
+      ldi    r16,0b00001000
+      sts    DDRH,r16
+
+      ldi    r16,0b00000000
+      ldi    r17,0b00100000 ; mask for 5
+      ldi    r18,0b00001000 ; mask for 3
+      ldi    r19,0b00010000 ; mask for 4
+      ldi    r20,0b00000100 ; mask for 2
+
+      ldi    r21, 0 ; variable to store LED state
 
 loop:
+      in     r22, _SFR_IO_ADDR(PINE) ; read the state of the button
+      sbrc   r22, 2                    ; check if button is pressed
+      rjmp   btn_pressed               ; if button is pressed, jump to btn_pressed
+
+      lsl    r21                        ; rotate LED state left
+      brcc   red                        ; if carry is clear, jump to red
+      brcc   yel                        ; if carry is clear, jump to yellow
+      brcc   grn                        ; if carry is clear, jump to green
+      rjmp   blu                        ; if carry is set, jump to blue
+
+btn_pressed:
+      call   delay_100ms                ; debounce delay
+
+btn_pressed_loop:
+      in     r22, _SFR_IO_ADDR(PINE)   ; read button state
+      sbrc   r22, 2                     ; check if button is still pressed
+      rjmp   btn_pressed_loop           ; if button is pressed, loop
+
+      rjmp   loop                       ; button released, resume main loop
 
 red:
-      sts PORTH,R16
-      out _SFR_IO_ADDR(PORTE),R17
-red_loop:
-      in R19,_SFR_IO_ADDR(PINE)
-      and R19,R20
-      breq red_loop
-
-      call delay_100ms
-      call delay_100ms
+      sts    PORTH, r16                 ; turn off other LEDs
+      out    _SFR_IO_ADDR(PORTE), r17  ; turn on red LED
+      rjmp   delay_and_continue
 
 yel:
-      out _SFR_IO_ADDR(PORTE),R16
-      out _SFR_IO_ADDR(PORTG),R17
-yel_loop:
-      in R19,_SFR_IO_ADDR(PINE)
-      and R19,R20
-      breq yel_loop
-
-      call delay_100ms
-      call delay_100ms
+      out    _SFR_IO_ADDR(PORTG), r17  ; turn on yellow LED
+      out    _SFR_IO_ADDR(PORTE), r16  ; turn off other LEDs
+      rjmp   delay_and_continue
 
 grn:
-      out _SFR_IO_ADDR(PORTG),R16
-      out _SFR_IO_ADDR(PORTE),R18
-grn_loop:
-      in R19,_SFR_IO_ADDR(PINE)
-      and R19,R20
-      breq grn_loop
-
-      call delay_100ms
-      call delay_100ms
+      out    _SFR_IO_ADDR(PORTE), r18  ; turn on green LED
+      out    _SFR_IO_ADDR(PORTG), r16  ; turn off other LEDs
+      rjmp   delay_and_continue
 
 blu:
-      out _SFR_IO_ADDR(PORTE),R16
-      sts PORTH,R18
-blu_loop:
-      in R19,_SFR_IO_ADDR(PINE)
-      and R19,R20
-      breq blu_loop
+      sts    PORTH, r18                 ; turn off other LEDs
+      out    _SFR_IO_ADDR(PORTE), r16  ; turn on blue LED
+      rjmp   delay_and_continue
 
-      call delay_100ms
-      call delay_100ms
-
-      rjmp loop
+delay_and_continue:
+      call   delay_200ms
+      rjmp   loop
 
 end:
-      rjmp end
-
-
-
+      rjmp   end
 
 ; 16MHz clock: 16 clock cycles/us
 ; 16000 clock cycles/ms
@@ -97,48 +94,41 @@ delay_us:
       ret           
 
 ; overhead: 22 clock cycles
-; need 998 delay_us + 10 nop
-delay_ms:           ; 4
-      ldi R18, 249  ; 1
-      ldi R20, 4    ; 1
-loop_ms:
-      call delay_us
-      dec R18       ; 1
-      brne loop_ms  ; 1
-      dec R20       ; 1
-      brne loop_ms  ; 1
-      call delay_us
-      call delay_us
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      nop
-      ret           ; 4
+; need 198 delay_us + 10 nop
+delay_200ms:
+      ldi    r18, 198     ; 1 cycle
+delay_200ms_loop:
+      call   delay_us     ; 4 cycles
+      dec    r18          ; 1 cycle
+      brne   delay_200ms_loop ; 1/2 cycles if not taken, 2 cycles if taken
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      nop                 ; 1 cycle
+      ret                 ; 4 cycles
 
-; overhead negligible
+; overhead: 22 clock cycles
+; need 18 delay_us + 10 nop
 delay_100ms:
-      push R16
-      ldi R16,100
-loop_100:
-      call delay_ms
-      dec R16
-      brne loop_100
-      pop R16
-      ret
-
-; overhead negligible
-delay_500ms:
-      push R16
-      ldi R16,5
-loop_500:
-      call delay_100ms
-      dec R16
-      brne loop_500
-      pop R16
-      ret
+      ldi    r18, 18     ; 1 cycle
+delay_100ms_loop:
+      call   delay_us    ; 4 cycles
+      dec    r18         ; 1 cycle
+      brne   delay_100ms_loop ; 1/2 cycles if not taken, 2 cycles if taken
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      nop                ; 1 cycle
+      ret                ; 4 cycles
